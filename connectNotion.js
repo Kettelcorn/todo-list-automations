@@ -1,15 +1,18 @@
 const { Client } = require("@notionhq/client")
 
+require('dotenv').config()
+
 // Initialize the client
-const notion = new Client({
-    auth: process.env.NOTION_TOKEN,
-})
+async function findData() {
+    const notion = new Client({
+        auth: process.env.NOTION_TOKEN,
+    })
 
-console.log(notion)
-
-async function connectServer() {
-    const listUsersResponse = await notion.users.list({})
-    console.log(listUsersResponse)
+    const data = await notion.dataSources.query({
+        data_source_id: process.env.DATA_SOURCE,
+    })
+    
+    console.log(data.results[0].properties.Tags.multi_select)
 }
 
-connectServer()
+findData()
