@@ -1,0 +1,26 @@
+{
+  "name": "todo-list-automations",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Kettelcorn/todo-list-automations#readme",
+  "bugs": {
+    "url": "https://github.com/Kettelcorn/todo-list-automations/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kettelcorn/todo-list-automations.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "test.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@notionhq/client": "^5.9.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  }
+}
