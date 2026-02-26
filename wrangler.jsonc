@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-worker",
+  "compatibility_date": "2026-02-26",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "my-worker"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
