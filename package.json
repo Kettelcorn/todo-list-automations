@@ -16,7 +16,9 @@
   "main": "server.js",
   "scripts": {
     "test": "test.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "dependencies": {
     "@notionhq/client": "^5.9.0",
