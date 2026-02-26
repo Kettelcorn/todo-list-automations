@@ -8,6 +8,10 @@ async function findData() {
         auth: process.env.NOTION_TOKEN,
     })
 
+    const result = await notion.databases.retrieve({
+        database_id: process.env.TEST_DATA_SOURCE
+    })
+    console.log(result)
     // Get all tasks that have the Morning, Afternoon, or Evening Tag
     const data = await notion.dataSources.query({
         data_source_id: process.env.DATA_SOURCE,
@@ -53,7 +57,7 @@ async function findData() {
         }
     }
 
-    removeChecks(data)
+    //removeChecks(data)
 
     // If tasks number exceeds 100, request next batch
     if (data.has_more) {
