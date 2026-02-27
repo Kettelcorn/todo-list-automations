@@ -15,10 +15,11 @@ require('dotenv').config()
 // .then(data => console.log(data))
 // .catch(error => console.log(error))
 async function getData(){
-    fetch(`https://api.notion.com/v1/data_sources/3132c390-ceff-8189-8d61-000b877cd880/query`, {
+    console.log(process.env.TEST_DATA_SOURCE)
+    const response = await fetch(`https://api.notion.com/v1/data_sources/${process.env.TEST_DATA_SOURCE}/query`, {
     method: 'POST',
     headers: {
-        'Authorization': 'Bearer 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',
+        'Authorization': `${process.env.NOTION_TOKEN}`,
         'Notion-Version': '2025-09-03',
         'Content-Type': 'application/json',
     },
@@ -49,11 +50,9 @@ async function getData(){
         }
     })
     })
-    .then(res => {
-    return res.json()
-    })
-    .then(data => removeChecks(data))
-    .catch(error => console.log(error))
+    const data = await response.json()
+    console.log("Retrieved Checked Tasks")
+    removeChecks(data)
 }
 
 getData()
@@ -102,11 +101,13 @@ getData()
 
 //     // Uncheck all checkboxes for filtered tasks
     async function removeChecks(tasks) {
+        console.log(`Removing ${tasks.results.length} from tasks`)
         for (let i = 0; i < tasks.results.length; i++) {
-            fetch(`https://api.notion.com/v1/pages/${tasks.results[i].id}`, {
+            console.log(`Starting to uncheck ${tasks.results[i].properties.Name.title[0].plain_text}, #${i}`)
+            const response = await fetch(`https://api.notion.com/v1/pages/${tasks.results[i].id}`, {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': 'Bearer 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',
+                    'Authorization': `Bearer ${process.env.NOTION_TOKEN}`,
                     'Notion-Version': '2025-09-03',
                     'Content-Type': 'application/json',
                 },
@@ -118,11 +119,8 @@ getData()
                     }
                 })
             })
-            .then(res => {
-            return res.json()
-            })
-            .then(data => console.log(`Unchecked ${tasks.results[i].properties.Name.title[0].plain_text}`))
-            .catch(error => console.log(error))
+            const data = await response.json()
+            console.log(`Unchecked ${tasks.results[i].properties.Name.title[0].plain_text}`)
             // const result = await notion.pages.update({
             //     page_id: tasks.results[i].id,
             //     properties: {
@@ -133,28 +131,51 @@ getData()
             // })
             // console.log(`Unchecked ${tasks.results[i].properties.Name.title[0].plain_text}`)
         }
+        hasMore(tasks)
     }
 
     //removeChecks(data)
 
     // If tasks number exceeds 100, request next batch
-//     if (data.has_more) {
-//         let current_data = data
-//         let has_more = data.has_more
-//         while (has_more) {
-//             const temp = await notion.dataSources.query({
-//                 data_source_id: process.env.DATA_SOURCE,
-//                 filter_properties: ['Tags', 'Checkbox', 'Name'],
-//                 start_cursor: current_data.next_cursor,
-//             })
-//             removeChecks(temp)
-//             if (temp.has_more){
-//                 current_data = temp
-//             } else {
-//                 has_more = false
-//             }
-//         } 
-//     }
-// }
+    async function hasMore(data){
+        if (data.has_more) {
+            console.log("Has more indeed lmao")
+            let current_data = data
+            let has_more = data.has_more
+            while (has_more) {
+                const response = await fetch(`https://api.notion.com/v1/data_sources/${process.env.TEST_DATA_SOURCE}/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `${process.env.NOTION_TOKEN}`,
+                        'Notion-Version': '2025-09-03',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        start_cursor: current_data.next_cursor,
+                    })
+                })
+                const temp = await response.json()
+                console.log("This block did run")
+                removeChecks(temp)
+                if (temp.has_more) {
+                    current_data = temp
+                } else {
+                    has_more = false
+                }
+                    
+                // const temp = await notion.dataSources.query({
+                //     data_source_id: process.env.DATA_SOURCE,
+                //     filter_properties: ['Tags', 'Checkbox', 'Name'],
+                //     start_cursor: current_data.next_cursor,
+                // })
+                // removeChecks(temp)
+                // if (temp.has_more){
+                //     current_data = temp
+                // } else {
+                //     has_more = false
+                // }
+            } 
+        }
+    }
 
 //findData()
