@@ -12,12 +12,12 @@
 	},
 	"compatibility_flags": [
 		"nodejs_compat"
-	],
-	"triggers": {
-		"crons": [
-			"0 4 * * *"
-		]
-	}
+	]
+	// "triggers": {
+	// 	"crons": [
+	// 		"*/1 * * * *"
+	// 	]
+	// }
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
