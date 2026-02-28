@@ -12,7 +12,7 @@ const { Client } = require("@notionhq/client")
 
 
 export default {
-	async fetch(request, env, ctx) {
+	async scheduled(request, env, ctx) {
 		// Getting all tasks that have morning, afternoon, and evenining tags
 		async function getData(){
 			console.log(env.TEST_DATA_SOURCE)
@@ -52,10 +52,10 @@ export default {
 			})
 			const data = await response.json()
 			console.log("Retrieved Checked Tasks")
-			removeChecks(data)
+			await removeChecks(data)
 		}
 
-		getData()
+		ctx.waitUntil(getData())
 
 		// Uncheck all checkboxes for filtered tasks
 		async function removeChecks(tasks) {
@@ -103,7 +103,7 @@ export default {
 					})
 					const temp = await response.json()
 					console.log("This block did run")
-					removeChecks(temp)
+					await removeChecks(temp)
 					if (temp.has_more) {
 						current_data = temp
 					} else {
